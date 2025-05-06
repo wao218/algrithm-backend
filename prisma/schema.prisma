@@ -29,9 +29,9 @@ model Problem {
   id              String           @id @default(uuid())
   title           String
   slug            String
-  difficulty      String
+  difficulty      String // should have this constraint - CHECK (difficulty IN ('easy', 'medium', 'hard'))
   description     String
-  testCases       Json?
+  testCases       Json? // -- e.g., [{ "input": "...", "output": "..." }]
   createdAt       DateTime         @default(now())
   submission      Submission?
   userProblemStat UserProblemStat?
@@ -46,9 +46,9 @@ model Submission {
   problemId String   @unique
   problem   Problem  @relation(fields: [problemId], references: [id])
   code      String
-  language  String
-  status    String
-  result    Json?
+  language  String // -- e.g., "python", "js", "cpp"
+  status    String // should have this constraint - CHECK (status IN ('pending', 'correct', 'incorrect')),
+  result    Json? // -- e.g., {"passed": 3, "total": 5, "message": "..."}
   createdAt DateTime @default(now())
 
   @@map("submissions")
@@ -63,7 +63,7 @@ model UserProblemStat {
   attemps         Int      @default(0)
   lastResult      String
   lastAttemptedAt DateTime
-  difficultyScore Float    @default(0)
+  difficultyScore Float    @default(0) // - e.g., for adaptive scheduling
 
   @@map("user_problem_stats")
 }
