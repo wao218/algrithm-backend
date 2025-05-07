@@ -25,11 +25,17 @@ model User {
   @@map("users")
 }
 
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
 model Problem {
   id              String           @id @default(uuid())
   title           String
   slug            String
-  difficulty      String // should have this constraint - CHECK (difficulty IN ('easy', 'medium', 'hard'))
+  difficulty      Difficulty // should have this constraint - CHECK (difficulty IN ('easy', 'medium', 'hard'))
   description     String
   testCases       Json? // -- e.g., [{ "input": "...", "output": "..." }]
   createdAt       DateTime         @default(now())
@@ -37,6 +43,12 @@ model Problem {
   userProblemStat UserProblemStat?
 
   @@map("problems")
+}
+
+enum Status {
+  PENDING
+  CORRECT
+  INCORRECT
 }
 
 model Submission {
@@ -47,7 +59,7 @@ model Submission {
   problem   Problem  @relation(fields: [problemId], references: [id])
   code      String
   language  String // -- e.g., "python", "js", "cpp"
-  status    String // should have this constraint - CHECK (status IN ('pending', 'correct', 'incorrect')),
+  status    Status // should have this constraint - CHECK (status IN ('pending', 'correct', 'incorrect')),
   result    Json? // -- e.g., {"passed": 3, "total": 5, "message": "..."}
   createdAt DateTime @default(now())
 
